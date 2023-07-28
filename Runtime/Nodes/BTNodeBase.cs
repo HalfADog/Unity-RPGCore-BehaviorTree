@@ -42,14 +42,18 @@ namespace RPGCore.BehaviorTree.Nodes
 	/// </summary>
 	public class NodeResult
 	{
-		public BTNodeState nodeState;
+		public BTNodeState state;
 		public BTNodeBase targetNode;
 
-		public NodeResult(BTNodeState nodeState, BTNodeBase targetNode)
+		public NodeResult(BTNodeState nodeState, BTNodeBase targetNode = null)
 		{
-			this.nodeState = nodeState;
+			this.state = nodeState;
 			this.targetNode = targetNode;
 		}
+
+		public static readonly NodeResult success = new NodeResult(BTNodeState.Succeed);
+		public static readonly NodeResult failed = new NodeResult(BTNodeState.Failed);
+		public static readonly NodeResult running = new NodeResult(BTNodeState.Running);
 	}
 
 	public abstract class BTNodeBase : MonoBehaviour
@@ -69,7 +73,7 @@ namespace RPGCore.BehaviorTree.Nodes
 		/// <summary>
 		/// 记录当前节点的状态
 		/// </summary>
-		public BTNodeState nodeState;
+		public BTNodeState nodeState = BTNodeState.Noone;
 
 		/// <summary>
 		/// 节点运行中返回的状态
@@ -96,6 +100,16 @@ namespace RPGCore.BehaviorTree.Nodes
 		/// </summary>
 		public int nodePriority;
 
+		/// <summary>
+		///
+		/// </summary>
+		public float LastTick => targetTree.LastTick;
+
+		/// <summary>
+		/// 节点运行过程中 两次执行之间的时间间隔
+		/// </summary>
+		public float DeltaTime => Time.time - targetTree.LastTick;
+
 #if UNITY_EDITOR
 
 		/// <summary>
@@ -109,7 +123,7 @@ namespace RPGCore.BehaviorTree.Nodes
 
 		#region 方法
 
-		private BTNodeBase()
+		public BTNodeBase()
 		{
 			//节点默认名称为当前节点类的名称
 			nodeName = this.GetType().Name;
@@ -122,10 +136,10 @@ namespace RPGCore.BehaviorTree.Nodes
 		{ }
 
 		/// <summary>
-		///节点执行逻辑
+		/// 执行节点
 		/// </summary>
-		/// <returns>当前节点的运行状态 包含当前节点本身</returns>
-		public abstract NodeResult Tick();
+		/// <returns>当前节点的运行状态</returns>
+		public abstract NodeResult Execute();
 
 		/// <summary>
 		/// 每个节点正常结束执行后会调用Exit方法

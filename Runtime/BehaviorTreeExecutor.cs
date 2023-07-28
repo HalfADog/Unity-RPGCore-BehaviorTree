@@ -20,5 +20,15 @@ namespace RPGCore.BehaviorTree
 		/// 当前对象包含的所有行为树
 		/// </summary>
 		public List<BehaviorTree> behaviorTrees = new List<BehaviorTree>();
+
+		private void Awake()
+		{
+			behaviorTrees.AddRange(GetComponents<BehaviorTree>());
+		}
+
+		private void Update()
+		{
+			mainTree.Tick();
+		}
 	}
 }
