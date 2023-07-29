@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using RPGCore;
 using RPGCore.BehaviorTree.Nodes;
+using RPGCore.BehaviorTree;
 
+[BTNode("Example/Wait", "等待指定时间")]
 public class Wait : BTNodeAction
 {
 	public float waitTime = 2;

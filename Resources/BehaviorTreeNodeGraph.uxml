@@ -1,0 +1,26 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Scripts/BehaviorTree/Unity-RPGCore-BehaviorTree/Resources/BehaviorTreeNodeGraph.uss?fileID=7433441132597879392&amp;guid=618c200ffd1676e42a7d15b44056c6a2&amp;type=3#BehaviorTreeNodeGraph" />
+    <ui:VisualElement name="node-state" picking-mode="Ignore" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; border-left-width: 5px; border-right-width: 5px; border-top-width: 5px; border-bottom-width: 5px;" />
+    <ui:VisualElement name="node-border" style="margin-left: 1px; margin-right: 1px; margin-top: 1px; margin-bottom: 1px; border-top-left-radius: 6px; border-bottom-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; flex-grow: 0; min-width: auto;">
+        <ui:VisualElement name="contents" style="flex-shrink: 0; flex-grow: 1;">
+            <ui:VisualElement name="top" style="flex-grow: 0; flex-shrink: 1; flex-direction: column;">
+                <ui:VisualElement name="input" style="flex-grow: 1; flex-shrink: 0; padding-top: 4px; padding-bottom: 4px; align-items: center; background-color: rgb(63, 63, 63); justify-content: center;" />
+                <ui:VisualElement name="divider" style="border-bottom-width: 1px; height: 0.1px; border-left-color: rgb(31, 31, 31); border-right-color: rgb(31, 31, 31); border-top-color: rgb(31, 31, 31); border-bottom-color: rgb(31, 31, 31);" />
+                <ui:VisualElement name="title" style="height: 20px; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; margin-left: 3px; margin-right: 3px; margin-top: 3px; margin-bottom: 3px;">
+                    <ui:Label text="Node Name" display-tooltip-when-elided="true" name="title-label" style="padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; align-items: stretch; -unity-text-align: middle-center; -unity-font-style: bold; font-size: 14px;" />
+                    <ui:VisualElement name="title-button-container">
+                        <ui:VisualElement name="collapse-button">
+                            <ui:VisualElement name="icon" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="description" style="align-items: flex-start; justify-content: center; min-height: 50px; padding-left: 4px; padding-right: 4px; padding-top: 4px; padding-bottom: 4px; display: flex; visibility: visible; overflow: visible;">
+                    <ui:Label text="node description" display-tooltip-when-elided="true" name="description-label" style="-unity-text-align: middle-center; align-items: center; font-size: 10px; -unity-font-style: normal; padding-left: 0; padding-right: 0;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="divider" style="border-left-color: rgb(31, 31, 31); border-right-color: rgb(31, 31, 31); border-top-color: rgb(31, 31, 31); border-bottom-color: rgb(31, 31, 31); border-bottom-width: 1px; height: 0.1px;" />
+                <ui:VisualElement name="output" style="padding-top: 4px; padding-bottom: 4px; align-items: center; background-color: rgb(63, 63, 63); justify-content: center; flex-shrink: 0; flex-grow: 1;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="selection-border" picking-mode="Ignore" style="position: absolute; margin-left: 1px; margin-right: 1px; margin-top: 1px; margin-bottom: 1px; border-top-left-radius: 8px; border-bottom-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; left: 0; top: 0; right: 0; bottom: 0;" />
+</ui:UXML>

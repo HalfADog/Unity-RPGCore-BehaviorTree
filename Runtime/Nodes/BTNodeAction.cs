@@ -7,5 +7,9 @@ namespace RPGCore.BehaviorTree.Nodes
 {
 	public abstract class BTNodeAction : BTNodeLeaf
 	{
+		public BTNodeAction()
+		{
+			nodeType = BTNodeType.Action;
+		}
 	}
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -56,7 +57,7 @@ namespace RPGCore.BehaviorTree.Nodes
 		public static readonly NodeResult running = new NodeResult(BTNodeState.Running);
 	}
 
-	public abstract class BTNodeBase : MonoBehaviour
+	public abstract class BTNodeBase : MonoBehaviour, IComparable<BTNodeBase>
 	{
 		#region ◊÷∂Œ”Î Ù–‘
 
@@ -155,6 +156,11 @@ namespace RPGCore.BehaviorTree.Nodes
 		public void DeleteNode()
 		{
 			DestroyImmediate(this);
+		}
+
+		public int CompareTo(BTNodeBase other)
+		{
+			return -other.graphNodePosition.x.CompareTo(graphNodePosition.x);
 		}
 
 #endif

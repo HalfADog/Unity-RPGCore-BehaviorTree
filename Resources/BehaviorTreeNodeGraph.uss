@@ -1,0 +1,23 @@
+:hover > #selection-border {
+    border-color: rgba(68, 192, 255, 0.5);
+    border-width: 1px;
+}
+
+:selected > #selection-border {
+    border-color: rgb(68, 192, 255);
+    border-width: 1px;
+}
+
+:selected:hover > #selection-border {
+    border-color: rgb(68, 192, 255);
+    border-width: 2px;
+}
+
+.node {
+    min-width: 160px;
+    background-color: rgba(32, 32, 32, 0);
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+}

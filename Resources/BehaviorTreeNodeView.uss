@@ -1,0 +1,235 @@
+#input-port {
+    flex-direction: column;
+    flex-grow: 1;
+    -unity-text-align: middle-center;
+}
+
+#output-port {
+    flex-direction: column-reverse;
+    -unity-text-align: middle-center;
+}
+
+#node-state {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-width: 5px;
+}
+
+#selection-border {
+    border-width: 0;
+    border-radius: 8px;
+    margin: 1px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+:hover > #selection-border {
+    border-color: rgba(68, 192, 255, 0.5);
+    border-width: 1px;
+}
+
+:selected > #selection-border {
+    border-color: rgb(68, 192, 255);
+    border-width: 1px;
+}
+
+:selected:hover > #selection-border {
+    border-color: rgb(68, 192, 255);
+    border-width: 2px;
+}
+
+#node-border {
+    margin: 1px;
+    border-radius: 6px;
+}
+
+#contents {
+    flex: 1 0 auto;
+}
+
+#divider {
+    background-color: rgba(35, 35, 35, 0.8);
+    border-color: rgba(35, 35, 35, 0.8);
+}
+
+#divider.horizontal {
+    height: 0.01px;
+    border-bottom-width: 1px;
+}
+
+#contents > #top {
+    flex-direction: column;
+}
+
+#input {
+    background-color: rgba(63, 63, 63, 0.8);
+    padding-top: 2px;
+    padding-bottom: 2px;
+    flex: 1 0 auto;
+    align-items: center;
+}
+
+#output {
+    background-color: rgba(63, 63, 63, 0.8);
+    padding-top: 2px;
+    padding-bottom: 2px;
+    flex: 1 0 auto;
+    align-items: center;
+}
+
+#title {
+    background-color: rgba(63, 63, 63, 0.8);
+    height: 36px;
+}
+
+#title-label {
+    color: rgb(193, 193, 193);
+    font-size: 14px;
+    -unity-text-align: middle-center;
+    margin: 6px 6px 0;
+    -unity-font-style: bold;
+}
+
+#title-button-container {
+    flex-direction: row;
+    flex-grow: 1;
+    background-color: rgb(55, 55, 55);
+}
+
+#collapse-button {
+    flex-grow: 1;
+}
+
+#collapse-button > #icon {
+    -unity-background-scale-mode: scale-to-fit;
+    opacity: 0.5;
+    flex-grow: 1;
+}
+
+#description {
+    background-color: rgba(63, 63, 63, 0.8);
+    min-height: 50px;
+}
+
+#description-label {
+    color: rgb(193, 193, 193);
+    font-size: 12px;
+    -unity-text-align: middle-left;
+    margin: 6px 6px 0;
+    max-width: 250px;
+    white-space: normal;
+}
+
+.node:hover#collapse-button > #icon {
+    visibility: visible;
+}
+
+.node {
+    min-width: 220px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.action #divider {
+    background-color: rgba(17, 0, 28, 0.8);
+    border-color: rgba(17, 0, 28, 0.8);
+}
+
+.action #input {
+    background-color: rgba(34, 1, 53, 0.8);
+}
+
+.action #output {
+    background-color: rgba(34, 1, 53, 0.8);
+}
+
+.action #title {
+    background-color: rgba(25, 0, 40, 0.8);
+}
+
+.action #description {
+    background-color: rgba(25, 0, 40, 0.8);
+}
+
+.condition #divider {
+    background-color: rgba(0, 28, 0, 0.8);
+    border-color: rgba(17, 0, 28, 0.8);
+}
+
+.condition #input {
+    background-color: rgba(1, 53, 1, 0.8);
+}
+
+.condition #output {
+    background-color: rgba(1, 53, 1, 0.8);
+}
+
+.condition #title {
+    background-color: rgba(0, 40, 0, 0.8);
+}
+
+.condition #description {
+    background-color: rgba(0, 40, 0, 0.8);
+}
+
+.composite #divider {
+    background-color: rgba(1, 42, 74, 0.8);
+    border-color: rgba(1, 42, 74, 0.8);
+}
+
+.composite #input {
+    background-color: rgba(1, 73, 124, 0.8);
+}
+
+.composite #output {
+    background-color: rgba(1, 73, 124, 0.8);
+}
+
+.composite #title {
+    background-color: rgba(1, 58, 99, 0.8);
+}
+
+.composite #description {
+    background-color: rgba(1, 58, 99, 0.8);
+}
+
+.decorator #divider {
+    background-color: rgba(0, 17, 28, 0.8);
+    border-color: rgba(0, 17, 28, 0.8);
+}
+
+.decorator #input {
+    background-color: rgba(0, 26, 44, 0.8);
+}
+
+.decorator #output {
+    background-color: rgba(0, 26, 44, 0.8);
+}
+
+.decorator #title {
+    background-color: rgba(0, 21, 35, 0.8);
+}
+
+.decorator #description {
+    background-color: rgba(0, 21, 35, 0.8);
+}
+
+.failure #node-state {
+    border-color: rgba(101, 0, 0, 0.8);
+}
+
+.running #node-state {
+    border-color: rgba(255, 136, 0, 0.8);
+}
+
+.success #node-state {
+    border-color: rgba(0, 75, 31, 0.8);
+}

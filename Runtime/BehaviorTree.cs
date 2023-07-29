@@ -12,6 +12,11 @@ namespace RPGCore.BehaviorTree
 	public class BehaviorTree : MonoBehaviour
 	{
 		/// <summary>
+		/// 行为树名称
+		/// </summary>
+		public string treeName;
+
+		/// <summary>
 		/// 当前树的所有节点
 		/// </summary>
 		public List<BTNodeBase> treeNodes = new List<BTNodeBase>();

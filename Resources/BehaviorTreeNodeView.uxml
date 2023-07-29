@@ -1,0 +1,21 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Scripts/BehaviorTree/Unity-RPGCore-BehaviorTree/Resources/BehaviorTreeNodeView.uss?fileID=7433441132597879392&amp;guid=9d0a630a6e9ca054eaef43c0c60cbe11&amp;type=3#BehaviorTreeNodeView" />
+    <ui:VisualElement name="node-state" picking-mode="Ignore" />
+    <ui:VisualElement name="node-border">
+        <ui:VisualElement name="contents">
+            <ui:VisualElement name="top">
+                <ui:VisualElement name="input" />
+                <ui:VisualElement name="divider" class="horizontal" />
+                <ui:VisualElement name="title">
+                    <ui:Label name="title-label" text="Node Name" class="unity-text-element unity-label" style="font-size: 16px; margin-bottom: 6px;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="description" style="min-height: 35px;">
+                    <ui:Label text="This is a Description of the node" display-tooltip-when-elided="true" name="description-label" style="-unity-font-style: bold;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="divider" class="horizontal" />
+                <ui:VisualElement name="output" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="selection-border" picking-mode="Ignore" />
+</ui:UXML>

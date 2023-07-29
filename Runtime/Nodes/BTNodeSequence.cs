@@ -7,6 +7,11 @@ namespace RPGCore.BehaviorTree.Nodes
 	[BTNode("Control/Sequence")]
 	public class BTNodeSequence : BTNodeControl
 	{
+		public BTNodeSequence()
+		{
+			nodeType = BTNodeType.Sequence;
+		}
+
 		public override void Enter()
 		{
 			ResetChild();
