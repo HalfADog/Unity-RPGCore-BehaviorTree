@@ -1,6 +1,24 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Scripts/BehaviorTree/Unity-RPGCore-BehaviorTree/Resources/BehaviorTreeEditorWindow.uss?fileID=7433441132597879392&amp;guid=ee39f69993e6cf548be4ee66f56ff356&amp;type=3#BehaviorTreeEditorWindow" />
     <ui:VisualElement name="MainWindow" style="flex-grow: 1;">
-        <uie:Toolbar />
-        <EditorWindowWorkSpaceUI />
+        <uie:Toolbar>
+            <uie:ToolbarButton text="Save" display-tooltip-when-elided="true" name="save" />
+            <uie:ToolbarSpacer style="width: 8px;" />
+            <uie:ToolbarButton text="New" display-tooltip-when-elided="true" name="new" />
+            <ui:TextField picking-mode="Ignore" text="New Name" name="newbtname" readonly="false" style="min-width: 96px;" />
+            <uie:ToolbarSpacer style="width: 8px;" />
+            <ui:VisualElement style="flex-shrink: 0; flex-grow: 1; align-items: center; justify-content: flex-start; max-width: none; width: auto; left: auto;">
+                <ui:DropdownField label="GameObjectName" index="-1" name="btTarget" style="-unity-text-align: upper-left; flex-direction: row; justify-content: flex-start; align-items: stretch; min-width: 320px;" />
+            </ui:VisualElement>
+            <uie:ToolbarButton text="Delete" display-tooltip-when-elided="true" name="delete" />
+        </uie:Toolbar>
+        <EditorWindowWorkSpaceUI name="editorspace" />
+        <ui:VisualElement name="nobt" picking-mode="Ignore" style="position: absolute; left: 0; top: 21px; right: 0; bottom: 0; justify-content: center; align-items: center; background-color: rgba(0, 0, 0, 0.3); display: flex; visibility: hidden;">
+            <ui:Label text="No Behavior Tree" display-tooltip-when-elided="true" style="font-size: 42px; -unity-font-style: bold;" />
+            <ui:Label text="Please add a new behavior tree" display-tooltip-when-elided="true" enable-rich-text="false" style="font-size: 24px; -unity-font-style: bold;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="nogameobject" picking-mode="Ignore" style="position: absolute; left: 0; top: 21px; right: 0; bottom: 0; justify-content: center; align-items: center; background-color: rgba(0, 0, 0, 0.3); display: flex; visibility: hidden;">
+            <ui:Label text="Selected GameObject  have no BT Compoent" display-tooltip-when-elided="true" style="font-size: 42px; -unity-font-style: bold;" />
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

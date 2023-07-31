@@ -8,13 +8,18 @@ namespace RPGCore.BehaviorTree
 	/// <summary>
 	/// 行为树 负责处理节点执行流和节点中断
 	/// </summary>
-	//[RequireComponent()]
+	//[RequireComponent(typeof(RPGCore.BehaviorTree.Blackboard.BehaviorTreeBlackboard))]
 	public class BehaviorTree : MonoBehaviour
 	{
 		/// <summary>
 		/// 行为树名称
 		/// </summary>
 		public string treeName;
+
+		/// <summary>
+		/// 归属的行为树执行器
+		/// </summary>
+		public BehaviorTreeExecutor executor;
 
 		/// <summary>
 		/// 当前树的所有节点
@@ -29,17 +34,20 @@ namespace RPGCore.BehaviorTree
 		/// <summary>
 		/// 当前节点执行流中的节点 该List最后一项表示正在执行的节点
 		/// </summary>
+		[HideInInspector]
 		public List<BTNodeBase> executeNodes = new List<BTNodeBase>();
 
 		/// <summary>
 		/// 节点执行日志 记录下所有运行过的节点
 		/// </summary>
+		[HideInInspector]
 		public List<BTNodeBase> executeNodesLog = new List<BTNodeBase>();
 
 		public float LastTick { get; private set; }
 
 		private void Awake()
 		{
+			//Debug.Log("BehaviorTree Awake");
 			//找到当前树的根节点
 			rootNode = treeNodes.FindAll(node => node.GetType().IsSubclassOf(typeof(BTNodeControl)))
 								.Find(node => (node as BTNodeControl).isRootNode);
@@ -108,7 +116,7 @@ namespace RPGCore.BehaviorTree
 					executeNodes.RemoveAt(executeNodes.Count - 1);
 				}
 			}
-			Restart();
+			//Restart();
 			LastTick = Time.time;
 		}
 
@@ -155,5 +163,33 @@ namespace RPGCore.BehaviorTree
 		{
 			treeNodes.Remove(node);
 		}
+
+#if UNITY_EDITOR
+
+		/// <summary>
+		/// 删除所有行为树节点
+		/// </summary>
+		public void DeleteAllNodes()
+		{
+			foreach (var node in treeNodes)
+			{
+				DestroyImmediate(node);
+			}
+			treeNodes.Clear();
+			executeNodes.Clear();
+			executeNodesLog.Clear();
+		}
+
+		/// <summary>
+		/// 删除行为树
+		/// </summary>
+		public void DeleteBehaviorTree()
+		{
+			DeleteAllNodes();
+			executor.RemoveBehaviorTree(treeName);
+			DestroyImmediate(this);
+		}
+
+#endif
 	}
 }

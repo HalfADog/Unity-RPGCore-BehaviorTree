@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -17,10 +18,21 @@ namespace RPGCore.BehaviorTree.Editor
 		public VisualElement nodeInspector;
 		public VisualElement treeList;
 
+		private ToolbarButton saveButton;
+		private ToolbarButton newButton;
+		private ToolbarButton deleteButton;
+		private TextField newBtName;
+		private DropdownField editorTreeSelector;
+
 		/// <summary>
 		/// 当前选中的有btexecute的gameobject
 		/// </summary>
 		public static GameObject targetGameObject;
+
+		/// <summary>
+		/// 当前选中的游戏物体上的BehaviorTreeExecutor组件
+		/// </summary>
+		public BehaviorTreeExecutor treeExecutor;
 
 		/// <summary>
 		/// 在nodegraphview中显示当前选中的behaviortree
@@ -48,8 +60,33 @@ namespace RPGCore.BehaviorTree.Editor
 			nodeGraphView.StretchToParentSize();
 			rootVisualElement.Q<VisualElement>("RightPane").Add(nodeGraphView);
 
-			//获取节点检查器容器
+			//获取UI
 			nodeInspector = rootVisualElement.Q<VisualElement>("Inspector");
+			saveButton = rootVisualElement.Q<ToolbarButton>("save");
+			newButton = rootVisualElement.Q<ToolbarButton>("new");
+			deleteButton = rootVisualElement.Q<ToolbarButton>("delete");
+			newBtName = rootVisualElement.Q<TextField>("newbtname");
+			editorTreeSelector = rootVisualElement.Q<DropdownField>("btTarget");
+			editorTreeSelector.choices = new List<string>();
+			//注册UI事件
+			saveButton.RegisterCallback<ClickEvent>(callback => { UpdateMonoNodes(); });
+			newButton.RegisterCallback<ClickEvent>(callback =>
+			{
+				//新行为树名称不为空 且不存在
+				if (newBtName.text != "" && treeExecutor.behaviorTrees.FindIndex(tree => tree.treeName == newBtName.text) == -1)
+				{
+					treeExecutor.AddBehaviorTree(newBtName.text, true);
+					//将当前的显示的行为树改变为新增的行为树图
+					UpdateMonoNodes();
+					RegenerateGraphNodesView();
+					UpdateEditorTreeSelector();
+				}
+			});
+			deleteButton.RegisterCallback<ClickEvent>(callback => { DeleteCurrentEditorTree(); });
+			editorTreeSelector.RegisterValueChangedCallback(callback =>
+			{
+				ChangeCurrentEditorTree(editorTreeSelector.text);
+			});
 
 			//只有当前选中的物体有行为树组件才能激活编辑
 			rootVisualElement.SetEnabled(false);
@@ -61,8 +98,16 @@ namespace RPGCore.BehaviorTree.Editor
 				{
 					//激活编辑 并生成节点视图
 					targetGameObject = selected;
+					treeExecutor = targetGameObject.GetComponent<BehaviorTreeExecutor>();
 					rootVisualElement.SetEnabled(true);
+					treeExecutor.currentEditorTree = treeExecutor.currentExecuteTree;
 					GenerateNodeGraphView();
+					UpdateEditorTreeSelector();
+				}
+				else
+				{
+					rootVisualElement.Q<VisualElement>("nobt").style.visibility = Visibility.Hidden;
+					rootVisualElement.Q<VisualElement>("nogameobject").style.visibility = Visibility.Visible;
 				}
 			}
 		}
@@ -77,11 +122,13 @@ namespace RPGCore.BehaviorTree.Editor
 				{
 					targetGameObject = selected;
 					rootVisualElement.SetEnabled(true);
+					rootVisualElement.Q<VisualElement>("nogameobject").style.visibility = Visibility.Hidden;
 					//如果说当前的节点视图中有节点
 					//也就是说当前是激活编辑状态 则保存当前的行为树
-					if (nodeGraphView.nodes.Count() != 0) UpdateMonoNodes();
+					UpdateMonoNodes();
 					//从新根据当前选中的物体所有的行为树从新生成节点视图
 					RegenerateGraphNodesView();
+					UpdateEditorTreeSelector();
 				}
 			}
 		}
@@ -96,7 +143,7 @@ namespace RPGCore.BehaviorTree.Editor
 			BTNodeBase node = (BTNodeBase)targetGameObject.AddComponent(nodeType);
 			//将脚本在inspector中隐藏不显示
 			//node.hideFlags = HideFlags.HideInInspector;
-			node.targetTree = targetGameObject.GetComponent<BehaviorTree>();
+			node.targetTree = treeExecutor.currentEditorTree;
 			node.targetTree.treeNodes.Add(node);
 			return node;
 		}
@@ -108,7 +155,19 @@ namespace RPGCore.BehaviorTree.Editor
 		{
 			//生成Node 并根据记录的position信息设置位置
 			if (targetGameObject == null) return;
-			targetGameObject.GetComponent<BehaviorTree>().treeNodes.ForEach((node) =>
+			//如果一个行为树也没有
+			if (treeExecutor.behaviorTrees.Count == 0 || treeExecutor.currentEditorTree == null)
+			{
+				rootVisualElement.Q<VisualElement>("nobt").style.visibility = Visibility.Visible;
+				rootVisualElement.Q<VisualElement>("editorspace").SetEnabled(false);
+				return;
+			}
+			else
+			{
+				rootVisualElement.Q<VisualElement>("nobt").style.visibility = Visibility.Hidden;
+				rootVisualElement.Q<VisualElement>("editorspace").SetEnabled(true);
+			}
+			treeExecutor.currentEditorTree.treeNodes.ForEach((node) =>
 			{
 				nodeGraphView.MakeNode(node);
 			});
@@ -133,11 +192,11 @@ namespace RPGCore.BehaviorTree.Editor
 		/// </summary>
 		public void UpdateMonoNodes()
 		{
-			if (targetGameObject != null)
+			if (targetGameObject != null && treeExecutor.currentEditorTree != null && nodeGraphView.nodes.Count() != 0)
 			{
 				//首先更新节点数量
 				List<Node> graphNodes = nodeGraphView.nodes.ToList();
-				List<BTNodeBase> monoNodes = targetGameObject.GetComponent<BehaviorTree>().treeNodes;
+				List<BTNodeBase> monoNodes = treeExecutor.currentEditorTree.treeNodes;
 				monoNodes.ForEach(mnode =>
 				{
 					//如果当前runtime节点在节点视图中不存在则删除
@@ -179,6 +238,91 @@ namespace RPGCore.BehaviorTree.Editor
 			nodeGraphView.ClearNodeGraph();
 			//再生成
 			GenerateNodeGraphView();
+		}
+
+		/// <summary>
+		/// 根据当前编辑的行为树更新视图正上方的当前编辑的行为树选择下拉UI
+		/// </summary>
+		private void UpdateEditorTreeSelector()
+		{
+			//哪个游戏物体
+			editorTreeSelector.Q<Label>().text = targetGameObject.name;
+			//构造选择下拉节点选项
+			int selectIndex = -1;
+			editorTreeSelector.choices.Clear();
+			for (int i = 0; i < treeExecutor.behaviorTrees.Count; i++)
+			{
+				editorTreeSelector.choices.Add(treeExecutor.behaviorTrees[i].treeName);
+				if (treeExecutor.behaviorTrees[i].treeName == treeExecutor.currentEditorTree.treeName)
+				{
+					selectIndex = i;
+				}
+			}
+			if (selectIndex != -1)
+			{
+				editorTreeSelector.index = selectIndex;
+			}
+			else
+			{
+				editorTreeSelector.choices.Add("Noone");
+				editorTreeSelector.index = 0;
+			}
+		}
+
+		/// <summary>
+		/// 改变当前编辑的树 一般由editorTreeSelector选项改变时调用
+		/// </summary>
+		public void ChangeCurrentEditorTree(string treeName)
+		{
+			//Debug.Log(treeExecutor.currentEditorTree.treeName + " " + treeName);
+			if (treeName == "") return;
+			UpdateMonoNodes();
+			var ctree = treeExecutor.behaviorTrees.Find(tree => tree.treeName == treeName);
+			if (ctree != null)
+			{
+				treeExecutor.currentEditorTree = ctree;
+			}
+			RegenerateGraphNodesView();
+		}
+
+		/// <summary>
+		/// 删除当前正在编辑的树
+		/// </summary>
+		public void DeleteCurrentEditorTree()
+		{
+			if (treeExecutor.currentEditorTree != null)
+			{
+				BehaviorTree editortree = treeExecutor.currentEditorTree;
+				//只有一个行为树 删了就没有了
+				if (treeExecutor.behaviorTrees.Count == 1)
+				{
+					treeExecutor.currentEditorTree = null;
+					treeExecutor.currentExecuteTree = null;
+				}
+				else
+				{
+					//改变当前编辑的行为树 默认修改为第一个行为树
+					int cindex = treeExecutor.behaviorTrees.FindIndex(tree => tree.treeName == editortree.treeName);
+					if (cindex != 0)
+					{
+						treeExecutor.currentEditorTree = treeExecutor.behaviorTrees[0];
+					}
+					else
+					{
+						treeExecutor.currentEditorTree = treeExecutor.behaviorTrees[1];
+					}
+					if (treeExecutor.currentExecuteTree == editortree)
+					{
+						treeExecutor.currentExecuteTree = treeExecutor.currentEditorTree;
+					}
+				}
+				//删除行为树
+				editortree.DeleteBehaviorTree();
+				//更新视图
+				RegenerateGraphNodesView();
+				//更新下拉菜单
+				UpdateEditorTreeSelector();
+			}
 		}
 
 		private void OnDisable()

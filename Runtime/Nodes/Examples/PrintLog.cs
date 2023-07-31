@@ -10,7 +10,7 @@ public class PrintLog : BTNodeAction
 {
 	public override NodeResult Execute()
 	{
-		Debug.Log("PrintLog Execute!");
+		Debug.Log("PrintLog Execute! " + Time.time);
 		return NodeResult.success;
 	}
 }

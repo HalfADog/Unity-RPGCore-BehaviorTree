@@ -1,0 +1,13 @@
+#btTarget Label {
+    -unity-text-align: middle-left;
+    min-width: 64px;
+    -unity-font-style: bold;
+    font-size: 14px;
+}
+
+#btTarget PopupTextElement {
+    min-width: 96px;
+    -unity-font-style: bold;
+    font-size: 14px;
+    -unity-text-align: middle-center;
+}

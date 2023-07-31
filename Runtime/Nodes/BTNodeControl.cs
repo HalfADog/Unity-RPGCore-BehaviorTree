@@ -53,8 +53,9 @@ namespace RPGCore.BehaviorTree.Nodes
 		public AbortType abortType { get; protected set; } = AbortType.Noone;
 
 		/// <summary>
-		/// 根据direction得到下一个子节点
+		/// 依据Direction获取当前子节点的下一个子节点
 		/// </summary>
+		/// <returns>是否已经获取了最后一个节点</returns>
 		protected bool GetNextChild()
 		{
 			if (currentChild == null)
@@ -95,7 +96,7 @@ namespace RPGCore.BehaviorTree.Nodes
 		/// <summary>
 		/// 重置子节点
 		/// </summary>
-		protected void ResetChild()
+		protected void ResetCurrentChild()
 		{
 			switch (dirction)
 			{

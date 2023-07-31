@@ -13,7 +13,7 @@
                     <ui:Label text="This is a Description of the node" display-tooltip-when-elided="true" name="description-label" style="-unity-font-style: bold;" />
                 </ui:VisualElement>
                 <ui:VisualElement name="divider" class="horizontal" />
-                <ui:VisualElement name="output" />
+                <ui:VisualElement name="output" style="min-width: auto; min-height: auto;" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

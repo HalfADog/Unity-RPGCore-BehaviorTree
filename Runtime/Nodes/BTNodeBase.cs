@@ -10,20 +10,12 @@ namespace RPGCore.BehaviorTree.Nodes
 	/// </summary>
 	public enum BTNodeType
 	{
-		//组合节点
 		Sequence, //顺序节点 所有成功则成功 否则失败
-
 		Select, //选择（备选）节点  有一个成功则成功 所有失败则失败
 		Parallel, //并行节点 执行所有子节点 当有至少N个子节点返回成功则返回成功 若所有子节点返回失败则失败
-
-		//修饰节点
 		Decorator, //装饰器节点 对子节点的返回结果进行修饰 可以实现repeat、invert、timeout节点等
-
-		//叶子节点
 		Action, //动作节点 行为树的叶子节点 负责功能实现
-
 		Condition, //条件节点 行为树的叶子节点 负责条件判断
-
 		Undefine
 	}
 
@@ -147,6 +139,22 @@ namespace RPGCore.BehaviorTree.Nodes
 		/// </summary>
 		public virtual void Exit()
 		{ }
+
+		/// <summary>
+		/// 将所有子节点的状态全部重置
+		/// </summary>
+		/// <param name="node"></param>
+		public void ResetNodeAndChildNodeState(BTNodeBase node)
+		{
+			if (node.childNodes.Count > 0)
+			{
+				foreach (var item in node.childNodes)
+				{
+					ResetNodeAndChildNodeState(item);
+				}
+			}
+			node.nodeState = BTNodeState.Noone;
+		}
 
 #if UNITY_EDITOR
 

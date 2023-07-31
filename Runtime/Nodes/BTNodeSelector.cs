@@ -4,18 +4,18 @@ using UnityEngine;
 
 namespace RPGCore.BehaviorTree.Nodes
 {
-	[BTNode("Control/Sequence", "AND - &&")]
-	public class BTNodeSequence : BTNodeControl
+	[BTNode("Control/Selector", "OR - ||")]
+	public class BTNodeSelector : BTNodeControl
 	{
-		public BTNodeSequence()
+		public BTNodeSelector()
 		{
-			nodeName = "Sequence";
-			nodeType = BTNodeType.Sequence;
+			nodeName = "Selector";
+			nodeType = BTNodeType.Select;
 		}
 
 		public override void Enter()
 		{
-			//Debug.Log("Sequence Enter!");
+			//Debug.Log("Selector Enter!");
 			//进入该节点前重置当前子节点
 			ResetCurrentChild();
 		}
@@ -26,15 +26,15 @@ namespace RPGCore.BehaviorTree.Nodes
 			{
 				if (currentChild.nodeState == BTNodeState.Succeed)
 				{
-					continue;
+					return NodeResult.success;
 				}
 				if (currentChild.nodeState == BTNodeState.Failed)
 				{
-					return NodeResult.failed;
+					continue;
 				}
 				return currentChild.runningNodeState;
 			}
-			return NodeResult.success;
+			return NodeResult.failed;
 		}
 	}
 }
