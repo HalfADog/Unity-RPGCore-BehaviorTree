@@ -1,32 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using RPGCore.BehaviorTree.Variable;
 
 namespace RPGCore.BehaviorTree.Blackboard
 {
 	public class BehaviorTreeBlackboard : MonoBehaviour
 	{
-		public List<BlackboardVariable> variables = new List<BlackboardVariable>();
-		private Dictionary<string, BlackboardVariable> dictionary = new Dictionary<string, BlackboardVariable>();
+		public List<Variable.BlackboardVariable> variables = new List<Variable.BlackboardVariable>();
+		private Dictionary<string, Variable.BlackboardVariable> dictionary = new Dictionary<string, Variable.BlackboardVariable>();
 
 		private void Awake()
 		{
 			dictionary.Clear();
 			for (int i = 0; i < variables.Count; i++)
 			{
-				BlackboardVariable var = variables[i];
+				Variable.BlackboardVariable var = variables[i];
 				dictionary.Add(var.key, var);
 			}
 		}
 
-		public BlackboardVariable[] GetAllVariables()
+		public Variable.BlackboardVariable[] GetAllVariables()
 		{
 			return variables.ToArray();
 		}
 
-		public T GetVariable<T>(string key) where T : BlackboardVariable
+		public T GetVariable<T>(string key) where T : Variable.BlackboardVariable
 		{
-			return (dictionary.TryGetValue(key, out BlackboardVariable val)) ? (T)val : null;
+			return (dictionary.TryGetValue(key, out Variable.BlackboardVariable val)) ? (T)val : null;
 		}
 	}
 }

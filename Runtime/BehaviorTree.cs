@@ -32,6 +32,11 @@ namespace RPGCore.BehaviorTree
 		public BTNodeBase rootNode = null;
 
 		/// <summary>
+		/// 是否重复执行树 默认重复
+		/// </summary>
+		public bool repeatTree = true;
+
+		/// <summary>
 		/// 当前节点执行流中的节点 该List最后一项表示正在执行的节点
 		/// </summary>
 		[HideInInspector]
@@ -116,7 +121,8 @@ namespace RPGCore.BehaviorTree
 					executeNodes.RemoveAt(executeNodes.Count - 1);
 				}
 			}
-			//Restart();
+			if (repeatTree) Restart();
+			else ResetNodes();
 			LastTick = Time.time;
 		}
 

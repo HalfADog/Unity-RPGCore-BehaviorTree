@@ -16,13 +16,15 @@ namespace RPGCore.BehaviorTree.Editor
 		public static BTEditorWindow window;
 		public BTNodeGraphView nodeGraphView;
 		public VisualElement nodeInspector;
-		public VisualElement treeList;
+		public VisualElement blackboardView;
 
 		private ToolbarButton saveButton;
 		private ToolbarButton newButton;
 		private ToolbarButton deleteButton;
 		private TextField newBtName;
 		private DropdownField editorTreeSelector;
+
+		private bool deleteTree = false;
 
 		/// <summary>
 		/// 当前选中的有btexecute的gameobject
@@ -62,6 +64,7 @@ namespace RPGCore.BehaviorTree.Editor
 
 			//获取UI
 			nodeInspector = rootVisualElement.Q<VisualElement>("Inspector");
+			blackboardView = rootVisualElement.Q<VisualElement>("Blackboard");
 			saveButton = rootVisualElement.Q<ToolbarButton>("save");
 			newButton = rootVisualElement.Q<ToolbarButton>("new");
 			deleteButton = rootVisualElement.Q<ToolbarButton>("delete");
@@ -82,10 +85,17 @@ namespace RPGCore.BehaviorTree.Editor
 					UpdateEditorTreeSelector();
 				}
 			});
-			deleteButton.RegisterCallback<ClickEvent>(callback => { DeleteCurrentEditorTree(); });
+			deleteButton.RegisterCallback<ClickEvent>(callback =>
+			{
+				nodeGraphView.currentSelectedNode = null;
+				DeleteCurrentEditorTree();
+			});
 			editorTreeSelector.RegisterValueChangedCallback(callback =>
 			{
-				ChangeCurrentEditorTree(editorTreeSelector.text);
+				//删除树后会更新下拉菜单从而触发ChangeCurrentEditorTree
+				//这会导致问题 所以依靠deleteTree标志来检测是否执行更新
+				if (!deleteTree) ChangeCurrentEditorTree(editorTreeSelector.text);
+				deleteTree = false;
 			});
 
 			//只有当前选中的物体有行为树组件才能激活编辑
@@ -242,6 +252,7 @@ namespace RPGCore.BehaviorTree.Editor
 
 		/// <summary>
 		/// 根据当前编辑的行为树更新视图正上方的当前编辑的行为树选择下拉UI
+		/// 更新的同时会触发ChangeCurrentEditorTree
 		/// </summary>
 		private void UpdateEditorTreeSelector()
 		{
@@ -272,11 +283,11 @@ namespace RPGCore.BehaviorTree.Editor
 		/// <summary>
 		/// 改变当前编辑的树 一般由editorTreeSelector选项改变时调用
 		/// </summary>
-		public void ChangeCurrentEditorTree(string treeName)
+		public void ChangeCurrentEditorTree(string treeName, bool saveCurrentTree = true)
 		{
 			//Debug.Log(treeExecutor.currentEditorTree.treeName + " " + treeName);
 			if (treeName == "") return;
-			UpdateMonoNodes();
+			if (saveCurrentTree) UpdateMonoNodes();
 			var ctree = treeExecutor.behaviorTrees.Find(tree => tree.treeName == treeName);
 			if (ctree != null)
 			{
@@ -298,18 +309,20 @@ namespace RPGCore.BehaviorTree.Editor
 				{
 					treeExecutor.currentEditorTree = null;
 					treeExecutor.currentExecuteTree = null;
+					//更新视图
+					RegenerateGraphNodesView();
 				}
 				else
 				{
 					//改变当前编辑的行为树 默认修改为第一个行为树
-					int cindex = treeExecutor.behaviorTrees.FindIndex(tree => tree.treeName == editortree.treeName);
+					int cindex = editorTreeSelector.choices.FindIndex(tree => tree == treeExecutor.currentEditorTree.treeName);
 					if (cindex != 0)
 					{
-						treeExecutor.currentEditorTree = treeExecutor.behaviorTrees[0];
+						ChangeCurrentEditorTree(editorTreeSelector.choices[0], false);
 					}
 					else
 					{
-						treeExecutor.currentEditorTree = treeExecutor.behaviorTrees[1];
+						ChangeCurrentEditorTree(editorTreeSelector.choices[1], false);
 					}
 					if (treeExecutor.currentExecuteTree == editortree)
 					{
@@ -318,10 +331,49 @@ namespace RPGCore.BehaviorTree.Editor
 				}
 				//删除行为树
 				editortree.DeleteBehaviorTree();
-				//更新视图
-				RegenerateGraphNodesView();
 				//更新下拉菜单
+				deleteTree = true;//防止UpdateEditorTreeSelector 触发 ChangeCurrentEditorTree
 				UpdateEditorTreeSelector();
+			}
+		}
+
+		/// <summary>
+		/// 更新节点检查器 在graphview中选中一个节点时调用
+		/// </summary>
+		public void UpdateNodeInspectorView(BTNodeBase selectNode)
+		{
+			if (selectNode == null)
+			{
+				nodeInspector.Clear();
+				return;
+			}
+			//获取到当前节点中所有序列化数据
+			SerializedObject serializedNode = new SerializedObject(selectNode);
+			SerializedProperty nodeProperty = serializedNode.GetIterator();
+			nodeProperty.Next(true);
+			//遍历所有序列化数据
+			while (nodeProperty.NextVisible(false))
+			{
+				if (nodeProperty.name == "m_Script") continue;
+				//构造一个PropertyField用于显示
+				PropertyField field = new PropertyField(nodeProperty, "");
+				field.name = "field";
+				field.SetEnabled(nodeProperty.name != "nodeType");
+				//与实际的节点数据绑定
+				field.Bind(serializedNode);
+				//当编辑显示的数据时调用
+				field.RegisterValueChangeCallback(callback => { });
+				//单独显示字段的名称 方便后面进行布局
+				Label fieldName = new Label(nodeProperty.displayName);
+				fieldName.name = "fieldName";
+				//用来放置字段 和字段名称
+				VisualElement fieldContainer = new VisualElement();
+				fieldContainer.name = "fieldContainer";
+				fieldContainer.Add(fieldName);
+				fieldContainer.Add(field);
+				//根据当前字段是否是variable reference来设置布局
+				fieldContainer.style.flexDirection = nodeProperty.type.Contains("Reference") ? FlexDirection.Column : FlexDirection.Row;
+				nodeInspector.Add(fieldContainer);
 			}
 		}
 

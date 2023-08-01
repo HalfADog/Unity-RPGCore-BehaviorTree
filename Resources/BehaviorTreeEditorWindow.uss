@@ -11,3 +11,39 @@
     font-size: 14px;
     -unity-text-align: middle-center;
 }
+
+#fieldName {
+    min-width: 96px;
+    -unity-font-style: bold;
+    padding-left: 4px;
+    -unity-text-align: middle-left;
+}
+
+#field {
+    min-width: 64px;
+    border-left-color: rgba(34, 34, 34, 255);
+}
+
+#inspectorTitle {
+    -unity-text-align: middle-center;
+    -unity-font-style: bold;
+    border-bottom-width: 0;
+    border-bottom-color: rgb(103, 103, 103);
+    background-color: rgb(43, 43, 43);
+    font-size: 13px;
+    margin-bottom: 4px;
+    margin-top: 0;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+#blackboardTitle {
+    -unity-font-style: bold;
+    font-size: 13px;
+    -unity-text-align: middle-center;
+    -unity-background-image-tint-color: rgb(44, 44, 44);
+    background-color: rgb(44, 44, 44);
+    margin-bottom: 4px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}

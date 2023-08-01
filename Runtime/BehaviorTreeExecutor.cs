@@ -8,7 +8,7 @@ namespace RPGCore.BehaviorTree
 	/// <summary>
 	/// 控制行为树执行
 	/// </summary>
-	//[RequireComponent(typeof(RPGCore.BehaviorTree.BehaviorTree))]
+	[RequireComponent(typeof(Blackboard.BehaviorTreeBlackboard))]
 	[DisallowMultipleComponent]
 	public class BehaviorTreeExecutor : MonoBehaviour
 	{
@@ -45,6 +45,16 @@ namespace RPGCore.BehaviorTree
 		/// 是否重新执行树
 		/// </summary>
 		public bool treeRestart = false;
+
+		/// <summary>
+		/// 当前对象上的行为树黑板值
+		/// </summary>
+		public Blackboard.BehaviorTreeBlackboard treeBlackboard;
+
+		private void Awake()
+		{
+			treeBlackboard = GetComponent<Blackboard.BehaviorTreeBlackboard>();
+		}
 
 		private void Update()
 		{

@@ -12,6 +12,9 @@ namespace RPGCore.BehaviorTree.Editor
 		public Port input;
 		public Port output;
 
+		/// <summary>
+		/// 图形节点当前位于的节点视图
+		/// </summary>
 		public BTNodeGraphView graphView;
 
 		private VisualElement descriptionContainer;
@@ -112,6 +115,8 @@ namespace RPGCore.BehaviorTree.Editor
 			{
 				descriptionContainer.style.display = DisplayStyle.Flex;
 			}
+			graphView.currentSelectedNode = null;
+			graphView.currentSelectedNode = monoNode;
 		}
 
 		public override void OnUnselected()

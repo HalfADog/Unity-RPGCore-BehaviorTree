@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RPGCore.BehaviorTree.Blackboard
+namespace RPGCore.BehaviorTree.Variable
 {
 	/// <summary>
 	/// 浮点型blackboard变量

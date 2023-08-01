@@ -66,32 +66,33 @@ namespace RPGCore.BehaviorTree.Nodes
 		/// <summary>
 		/// 记录当前节点的状态
 		/// </summary>
-		public BTNodeState nodeState = BTNodeState.Noone;
+		[HideInInspector] public BTNodeState nodeState = BTNodeState.Noone;
 
 		/// <summary>
 		/// 节点运行中返回的状态
 		/// </summary>
-		public NodeResult runningNodeState;
+
+		[HideInInspector] public NodeResult runningNodeState;
 
 		/// <summary>
 		/// 当前节点的子节点
 		/// </summary>
-		public List<BTNodeBase> childNodes = new List<BTNodeBase>();
+		[HideInInspector] public List<BTNodeBase> childNodes = new List<BTNodeBase>();
 
 		/// <summary>
 		/// 当前节点的父节点
 		/// </summary>
-		public BTNodeBase parentNode;
+		[HideInInspector] public BTNodeBase parentNode;
 
 		/// <summary>
 		/// 当前节点所运行的目标树
 		/// </summary>
-		public BehaviorTree targetTree;
+		[HideInInspector] public BehaviorTree targetTree;
 
 		/// <summary>
 		/// 节点优先级 越接近0 优先级越高
 		/// </summary>
-		public int nodePriority;
+		[HideInInspector] public int nodePriority;
 
 		/// <summary>
 		///
@@ -108,6 +109,7 @@ namespace RPGCore.BehaviorTree.Nodes
 		/// <summary>
 		/// 节点图在行为树编辑器中的位置
 		/// </summary>
+		[HideInInspector]
 		public Vector2 graphNodePosition;
 
 #endif

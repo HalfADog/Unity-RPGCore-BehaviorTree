@@ -6,7 +6,7 @@ namespace RPGCore.BehaviorTree.Nodes
 {
 	public abstract class BTNodeDecorator : BTNodeBase
 	{
-		public BTNodeBase child;
+		[HideInInspector] public BTNodeBase child;
 
 		/// <summary>
 		/// 返回运行状态并把子节点作为target传递

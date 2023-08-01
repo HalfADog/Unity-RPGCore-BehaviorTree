@@ -8,9 +8,11 @@ using RPGCore.BehaviorTree;
 [BTNode("Example/PrintLog", "打印日志信息")]
 public class PrintLog : BTNodeAction
 {
+	public string logMsg;
+
 	public override NodeResult Execute()
 	{
-		Debug.Log("PrintLog Execute! " + Time.time);
+		Debug.Log(logMsg);
 		return NodeResult.success;
 	}
 }

@@ -14,7 +14,23 @@ namespace RPGCore.BehaviorTree.Editor
 		private BTSearchWindow searchWindow;
 		private BTEditorWindow editorWindow;
 		public readonly Vector2 defaultNodeSize = new Vector2(150, 200);
-		private BehaviorTreeNodeBase selectedNode;
+		private BTNodeBase selectedNode;
+
+		/// <summary>
+		/// 当前在节点视图中选择的节点 set时触发UpdateNodeInspectorView
+		/// </summary>
+		public BTNodeBase currentSelectedNode
+		{
+			get { return selectedNode; }
+			set
+			{
+				if (selectedNode != value)
+				{
+					selectedNode = value;
+					editorWindow.UpdateNodeInspectorView(selectedNode);
+				}
+			}
+		}
 
 		public BTNodeGraphView(BTEditorWindow window)
 		{
