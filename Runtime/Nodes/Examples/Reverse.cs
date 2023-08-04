@@ -8,11 +8,6 @@ using RPGCore.BehaviorTree;
 [BTNode("Decorator/Reverse", "反转结果")]
 public class Reverse : BTNodeDecorator
 {
-	public override void Enter()
-	{
-		//Debug.Log("Reverse Enter!");
-	}
-
 	public override NodeResult Decorate(NodeResult result)
 	{
 		switch (result.state)

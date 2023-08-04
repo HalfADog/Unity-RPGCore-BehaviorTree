@@ -22,10 +22,11 @@ namespace RPGCore.BehaviorTree.Nodes
 
 		public override NodeResult Execute()
 		{
-			while (!GetNextChild())
+			while (existNextChild)
 			{
 				if (currentChild.nodeState == BTNodeState.Succeed)
 				{
+					GetNextChild();
 					continue;
 				}
 				if (currentChild.nodeState == BTNodeState.Failed)

@@ -14,7 +14,6 @@ public class Wait : BTNodeAction
 
 	public override void Enter()
 	{
-		Debug.Log("Wait Enter!");
 		timer = 0;
 	}
 

@@ -1,0 +1,10 @@
+:hover > #variableContainer {
+    border-left-color: rgb(94, 229, 255);
+    border-right-color: rgb(94, 229, 255);
+    border-top-color: rgb(94, 229, 255);
+    border-bottom-color: rgb(94, 229, 255);
+    border-left-width: 0.5px;
+    border-right-width: 0.5px;
+    border-top-width: 0.5px;
+    border-bottom-width: 0.5px;
+}

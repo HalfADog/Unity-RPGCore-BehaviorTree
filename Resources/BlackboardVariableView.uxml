@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Scripts/BehaviorTree/Unity-RPGCore-BehaviorTree/Resources/BlackboardVariableView.uss?fileID=7433441132597879392&amp;guid=fccea2374f864c7498bf9698ecdde61a&amp;type=3#BlackboardVariableView" />
+    <ui:VisualElement name="variableContainer" style="flex-direction: row; height: 20px; align-items: center; justify-content: flex-start; background-color: rgb(72, 72, 72);">
+        <ui:Label text="Variable Name" display-tooltip-when-elided="true" name="variableName" style="margin-left: 0; margin-right: 0; -unity-font-style: bold; padding-left: 3px; padding-right: 10px; border-right-width: 0; border-right-color: rgb(255, 255, 255); width: 35%; -unity-text-align: middle-left;" />
+        <ui:VisualElement name="fieldContainer" style="flex-grow: 1; justify-content: space-between; width: 65%; flex-direction: column; margin-left: 5%; margin-right: 5%; padding-left: 0;">
+            <uie:PropertyField name="field" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

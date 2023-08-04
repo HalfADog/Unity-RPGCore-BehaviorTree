@@ -1,8 +1,10 @@
 using RPGCore.BehaviorTree.Nodes;
+using RPGCore.BehaviorTree.Variable;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
@@ -20,9 +22,17 @@ namespace RPGCore.BehaviorTree.Editor
 
 		private ToolbarButton saveButton;
 		private ToolbarButton newButton;
-		private ToolbarButton deleteButton;
+		private ToolbarButton deleteTreeButton;
 		private TextField newBtName;
 		private DropdownField editorTreeSelector;
+
+		private ListView variableList;
+		private Button addVariableButton;
+		private TextField addVariableName;
+		private ToolbarButton deleteVariableButton;
+		private DropdownField addVariableTypes;
+		private List<Type> variableTypes = new List<Type>();
+		private VisualTreeAsset variableViewTree;
 
 		private bool deleteTree = false;
 
@@ -37,9 +47,9 @@ namespace RPGCore.BehaviorTree.Editor
 		public BehaviorTreeExecutor treeExecutor;
 
 		/// <summary>
-		/// 在nodegraphview中显示当前选中的behaviortree
+		/// 当前物体上的blackboard组件 一个executor只能有一个blackboard
 		/// </summary>
-		public BehaviorTree targetBehaviorTree;
+		public Blackboard.BehaviorTreeBlackboard treeBlackboard;
 
 		[MenuItem("Window/AI/BehaviorTree Editor")]
 		public static void OpenEditorWindow()
@@ -62,15 +72,29 @@ namespace RPGCore.BehaviorTree.Editor
 			nodeGraphView.StretchToParentSize();
 			rootVisualElement.Q<VisualElement>("RightPane").Add(nodeGraphView);
 
+			//加载blackboard视图
+			blackboardView = rootVisualElement.Q<VisualElement>("Blackboard");
+			VisualTreeAsset blackboardViewTree = Resources.Load<VisualTreeAsset>("BlackboardEditorWindow");
+			TemplateContainer blackboardViewInstance = blackboardViewTree.CloneTree();
+			blackboardView.Add(blackboardViewInstance);
+			//加载variable视图
+			variableViewTree = Resources.Load<VisualTreeAsset>("BlackboardVariableView");
+
 			//获取UI
 			nodeInspector = rootVisualElement.Q<VisualElement>("Inspector");
-			blackboardView = rootVisualElement.Q<VisualElement>("Blackboard");
 			saveButton = rootVisualElement.Q<ToolbarButton>("save");
 			newButton = rootVisualElement.Q<ToolbarButton>("new");
-			deleteButton = rootVisualElement.Q<ToolbarButton>("delete");
+			deleteTreeButton = rootVisualElement.Q<ToolbarButton>("delete");
 			newBtName = rootVisualElement.Q<TextField>("newbtname");
 			editorTreeSelector = rootVisualElement.Q<DropdownField>("btTarget");
 			editorTreeSelector.choices = new List<string>();
+
+			addVariableName = blackboardView.Q<TextField>("variableName");
+			addVariableButton = blackboardView.Q<Button>("add");
+			deleteVariableButton = blackboardView.Q<ToolbarButton>("delete");
+			addVariableTypes = blackboardView.Q<DropdownField>("variableType");
+			variableList = blackboardView.Q<ListView>("variables");
+			addVariableTypes.choices = new List<string>();
 			//注册UI事件
 			saveButton.RegisterCallback<ClickEvent>(callback => { UpdateMonoNodes(); });
 			newButton.RegisterCallback<ClickEvent>(callback =>
@@ -85,7 +109,7 @@ namespace RPGCore.BehaviorTree.Editor
 					UpdateEditorTreeSelector();
 				}
 			});
-			deleteButton.RegisterCallback<ClickEvent>(callback =>
+			deleteTreeButton.RegisterCallback<ClickEvent>(callback =>
 			{
 				nodeGraphView.currentSelectedNode = null;
 				DeleteCurrentEditorTree();
@@ -97,7 +121,9 @@ namespace RPGCore.BehaviorTree.Editor
 				if (!deleteTree) ChangeCurrentEditorTree(editorTreeSelector.text);
 				deleteTree = false;
 			});
-
+			addVariableButton.RegisterCallback<ClickEvent>(callback => { AddVariable(); });
+			deleteVariableButton.RegisterCallback<ClickEvent>(callback => { DeleteVariable(); });
+			//激活与初始化界面
 			//只有当前选中的物体有行为树组件才能激活编辑
 			rootVisualElement.SetEnabled(false);
 			GameObject selected = Selection.activeGameObject;
@@ -109,10 +135,14 @@ namespace RPGCore.BehaviorTree.Editor
 					//激活编辑 并生成节点视图
 					targetGameObject = selected;
 					treeExecutor = targetGameObject.GetComponent<BehaviorTreeExecutor>();
+					treeBlackboard = targetGameObject.GetComponent<Blackboard.BehaviorTreeBlackboard>();
 					rootVisualElement.SetEnabled(true);
 					treeExecutor.currentEditorTree = treeExecutor.currentExecuteTree;
 					GenerateNodeGraphView();
 					UpdateEditorTreeSelector();
+
+					GenerateVariableListView();
+					UpdateVariableTypeSelector();
 				}
 				else
 				{
@@ -368,12 +398,91 @@ namespace RPGCore.BehaviorTree.Editor
 				fieldName.name = "fieldName";
 				//用来放置字段 和字段名称
 				VisualElement fieldContainer = new VisualElement();
-				fieldContainer.name = "fieldContainer";
 				fieldContainer.Add(fieldName);
 				fieldContainer.Add(field);
 				//根据当前字段是否是variable reference来设置布局
-				fieldContainer.style.flexDirection = nodeProperty.type.Contains("Reference") ? FlexDirection.Column : FlexDirection.Row;
+				if (nodeProperty.type.Contains("Reference"))
+				{
+					fieldContainer.name = "fieldContainer_ref";
+					fieldContainer.style.flexDirection = FlexDirection.Column;
+				}
+				else
+				{
+					fieldContainer.name = "fieldContainer";
+					fieldContainer.style.flexDirection = FlexDirection.Row;
+				}
 				nodeInspector.Add(fieldContainer);
+			}
+		}
+
+		/// <summary>
+		/// 生成blackboard的variable list
+		/// </summary>
+		private void GenerateVariableListView()
+		{
+			variableList.makeItem = () =>
+			{
+				TemplateContainer variableViewInstance = variableViewTree.CloneTree();
+				return variableViewInstance;
+			};
+			variableList.bindItem = (item, index) =>
+			{
+				item.Q<Label>("variableName").text = treeBlackboard.variables[index].key;
+				SerializedObject serializedObject = new SerializedObject(treeBlackboard.variables[index]);
+				SerializedProperty property = serializedObject.FindProperty("val");
+				item.Q<PropertyField>("field").label = "";
+				item.Q<PropertyField>("field").BindProperty(property);
+				item.Q<PropertyField>("field").Bind(serializedObject);
+			};
+			variableList.itemsSource = treeBlackboard.variables;
+		}
+
+		/// <summary>
+		/// 添加variable并刷新variableList
+		/// </summary>
+		private void AddVariable()
+		{
+			treeBlackboard.CreateVariable(addVariableName.text, variableTypes[addVariableTypes.index]);
+			variableList.Rebuild();
+		}
+
+		/// <summary>
+		/// 删除variable并刷新variableList
+		/// </summary>
+		private void DeleteVariable()
+		{
+			if (variableList.selectedItem == null) return;
+			var variable = treeBlackboard.variables.Find(variable => variable.key == (variableList.selectedItem as Variable.BlackboardVariable).key);
+			if (variable != null)
+			{
+				treeBlackboard.DeleteVariable(variable.key);
+				variableList.Rebuild();
+			}
+		}
+
+		/// <summary>
+		/// 更新添加variable的type下拉菜单
+		/// </summary>
+		private void UpdateVariableTypeSelector()
+		{
+			variableTypes.Clear();
+			addVariableTypes.choices.Clear();
+			//遍历整个程序集查找所有继承自BlackboardVariable类 即找到所有variable类型
+			foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+			{
+				IEnumerable<Type> enumerable = assembly
+					.GetTypes()
+					.Where(
+						myType =>
+							myType.IsClass
+							&& !myType.IsAbstract
+							&& myType.IsSubclassOf(typeof(Variable.BlackboardVariable))
+					);
+				foreach (Type type in enumerable)
+				{
+					variableTypes.Add(type);
+					addVariableTypes.choices.Add(type.Name);
+				}
 			}
 		}
 

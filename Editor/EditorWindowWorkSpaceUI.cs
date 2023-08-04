@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -16,17 +17,25 @@ public class EditorWindowWorkSpaceUI : TwoPaneSplitView
 	private VisualElement inspectorContainer;
 	private ScrollView inspector;
 	private VisualElement blackboardContainer;
-	private ScrollView blackboard;
+	private VisualElement blackboard;
 
 	public EditorWindowWorkSpaceUI()
 	{
+		InitMainWindow();
+	}
+
+	/// <summary>
+	/// 初始化主面板
+	/// </summary>
+	private void InitMainWindow()
+	{
 		leftPane = new VisualElement();
 		leftPane.name = "LeftPane";
-		leftPane.style.minWidth = 192.0f;
+		leftPane.style.minWidth = 208.0f;
 		this.Add(leftPane);
 		rightPane = new VisualElement();
 		rightPane.name = "RightPane";
-		rightPane.style.minWidth = 128.0f;
+		rightPane.style.minWidth = 144.0f;
 		this.Add(rightPane);
 
 		leftPaneSplitView = new TwoPaneSplitView();
@@ -34,7 +43,7 @@ public class EditorWindowWorkSpaceUI : TwoPaneSplitView
 
 		inspectorContainer = new VisualElement();
 		inspectorContainer.name = "InspectorContainer";
-		inspectorContainer.style.minHeight = 128.0f;
+		inspectorContainer.style.minHeight = 192.0f;
 		leftPaneSplitView.Add(inspectorContainer);
 		inspector = new ScrollView();
 		inspector.name = "Inspector";
@@ -45,9 +54,9 @@ public class EditorWindowWorkSpaceUI : TwoPaneSplitView
 
 		blackboardContainer = new VisualElement();
 		blackboardContainer.name = "BlackboardContainer";
-		blackboardContainer.style.minHeight = 128.0f;
+		blackboardContainer.style.minHeight = 192.0f;
 		leftPaneSplitView.Add(blackboardContainer);
-		blackboard = new ScrollView();
+		blackboard = new VisualElement();
 		blackboard.name = "Blackboard";
 		Label blackboardTitle = new Label("Blackboard");
 		blackboardTitle.name = "blackboardTitle";

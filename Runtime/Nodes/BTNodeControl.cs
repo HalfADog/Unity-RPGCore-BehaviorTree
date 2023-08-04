@@ -45,25 +45,24 @@ namespace RPGCore.BehaviorTree.Nodes
 		/// <summary>
 		/// 子节点执行顺序
 		/// </summary>
-		public Dirction dirction { get; protected set; } = Dirction.Normal;
+		public Dirction dirction = Dirction.Normal;
 
 		/// <summary>
 		/// 中断操作的类型
 		/// </summary>
-		public AbortType abortType { get; protected set; } = AbortType.Noone;
+		public AbortType abortType = AbortType.Noone;
+
+		/// <summary>
+		/// 是否有下一个子节点
+		/// </summary>
+		protected bool existNextChild = true;
 
 		/// <summary>
 		/// 依据Direction获取当前子节点的下一个子节点
 		/// </summary>
 		/// <returns>是否已经获取了最后一个节点</returns>
-		protected bool GetNextChild()
+		protected void GetNextChild()
 		{
-			if (currentChild == null)
-			{
-				currentChild = childNodes[childNodeIndex];
-				return false;
-			}
-			bool finish = false;
 			switch (dirction)
 			{
 				case Dirction.Normal:
@@ -71,7 +70,7 @@ namespace RPGCore.BehaviorTree.Nodes
 					if (childNodeIndex == childNodes.Count)
 					{
 						childNodeIndex = 0;
-						finish = true;
+						existNextChild = false;
 					}
 					break;
 
@@ -80,7 +79,7 @@ namespace RPGCore.BehaviorTree.Nodes
 					if (childNodeIndex < 0)
 					{
 						childNodeIndex = childNodes.Count - 1;
-						finish = true;
+						existNextChild = false;
 					}
 					break;
 				//TODO:记录有哪些节点已经被执行 下次不会被随机到
@@ -90,7 +89,6 @@ namespace RPGCore.BehaviorTree.Nodes
 					break;
 			}
 			currentChild = childNodes[childNodeIndex];
-			return finish;
 		}
 
 		/// <summary>
@@ -108,7 +106,13 @@ namespace RPGCore.BehaviorTree.Nodes
 					childNodeIndex = childNodes.Count - 1;
 					break;
 			}
-			currentChild = null;
+			currentChild = childNodes[childNodeIndex];
+			existNextChild = true;
+		}
+
+		public int GetCurrentChildNodeIndex()
+		{
+			return childNodeIndex;
 		}
 	}
 }

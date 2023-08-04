@@ -21,7 +21,12 @@
 
 #field {
     min-width: 64px;
-    border-left-color: rgba(34, 34, 34, 255);
+    border-left-color: rgb(34, 34, 34);
+}
+
+#fieldContainer_ref {
+    background-color: rgb(26, 26, 26);
+    margin-top: 4px;
 }
 
 #inspectorTitle {
@@ -30,7 +35,7 @@
     border-bottom-width: 0;
     border-bottom-color: rgb(103, 103, 103);
     background-color: rgb(43, 43, 43);
-    font-size: 13px;
+    font-size: 16px;
     margin-bottom: 4px;
     margin-top: 0;
     padding-top: 2px;
@@ -39,7 +44,7 @@
 
 #blackboardTitle {
     -unity-font-style: bold;
-    font-size: 13px;
+    font-size: 16px;
     -unity-text-align: middle-center;
     -unity-background-image-tint-color: rgb(44, 44, 44);
     background-color: rgb(44, 44, 44);

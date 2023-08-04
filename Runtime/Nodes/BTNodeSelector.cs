@@ -15,14 +15,13 @@ namespace RPGCore.BehaviorTree.Nodes
 
 		public override void Enter()
 		{
-			//Debug.Log("Selector Enter!");
 			//进入该节点前重置当前子节点
 			ResetCurrentChild();
 		}
 
 		public override NodeResult Execute()
 		{
-			while (!GetNextChild())
+			while (existNextChild)
 			{
 				if (currentChild.nodeState == BTNodeState.Succeed)
 				{
@@ -30,6 +29,7 @@ namespace RPGCore.BehaviorTree.Nodes
 				}
 				if (currentChild.nodeState == BTNodeState.Failed)
 				{
+					GetNextChild();
 					continue;
 				}
 				return currentChild.runningNodeState;

@@ -1,4 +1,5 @@
 using RPGCore.BehaviorTree.Nodes;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -105,7 +106,7 @@ namespace RPGCore.BehaviorTree
 						executeNodesLog.Add(nodeResult.targetNode);
 						//设置当前节点的优先级 根据执行的先后顺序来确定 优先级越高越先执行
 						nodeResult.targetNode.nodePriority = executeNodesLog.Count;
-						Debug.Log(nodeResult.targetNode.nodeName + "加入了执行栈");
+						//Debug.Log(nodeResult.targetNode.nodeName + "加入了执行栈");
 						//调用Enter方法
 						nodeResult.targetNode.Enter();
 						continue;
@@ -117,7 +118,7 @@ namespace RPGCore.BehaviorTree
 					//当前节点结束执行
 					currentNode.Exit();
 					//并从执行栈中移出 下一次循环执行的节点就是当前被移出节点的上一个节点
-					Debug.Log(currentNode.nodeName + "移出了执行栈");
+					//Debug.Log(currentNode.nodeName + "移出了执行栈");
 					executeNodes.RemoveAt(executeNodes.Count - 1);
 				}
 			}
@@ -168,6 +169,21 @@ namespace RPGCore.BehaviorTree
 		public void RemoveNode(BTNodeBase node)
 		{
 			treeNodes.Remove(node);
+		}
+
+		/// <summary>
+		/// 获取当前执行栈中所有节点
+		/// </summary>
+		/// <param name="stack"></param>
+		public void GetStack(ref BTNodeBase[] stack)
+		{
+			//当数组太小的时候调整数组大小
+			if (executeNodes.Count > stack.Length)
+			{
+				Array.Resize(ref stack, executeNodes.Count);
+			}
+			//将当前执行栈中的节点全部copy给stack
+			executeNodes.CopyTo(stack);
 		}
 
 #if UNITY_EDITOR
