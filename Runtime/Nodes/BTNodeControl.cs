@@ -14,17 +14,6 @@ namespace RPGCore.BehaviorTree.Nodes
 		Random
 	}
 
-	/// <summary>
-	/// 中断操作类型
-	/// </summary>
-	public enum AbortType
-	{
-		Self,
-		LowPriority,
-		Both,
-		Noone
-	}
-
 	public abstract class BTNodeControl : BTNodeBase
 	{
 		/// <summary>
@@ -50,7 +39,7 @@ namespace RPGCore.BehaviorTree.Nodes
 		/// <summary>
 		/// 中断操作的类型
 		/// </summary>
-		public AbortType abortType = AbortType.Noone;
+		//public AbortType abortType = AbortType.Noone;
 
 		/// <summary>
 		/// 是否有下一个子节点

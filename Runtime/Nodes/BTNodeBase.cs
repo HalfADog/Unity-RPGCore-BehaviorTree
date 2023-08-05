@@ -158,6 +158,13 @@ namespace RPGCore.BehaviorTree.Nodes
 			node.nodeState = BTNodeState.Noone;
 		}
 
+		/// <summary>
+		/// 在被打断时且还处于running状态调用
+		/// </summary>
+		public virtual void OnBehaviourTreeAbort()
+		{
+		}
+
 #if UNITY_EDITOR
 
 		/// <summary>

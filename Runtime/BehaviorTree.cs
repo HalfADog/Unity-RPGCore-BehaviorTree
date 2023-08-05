@@ -49,11 +49,16 @@ namespace RPGCore.BehaviorTree
 		[HideInInspector]
 		public List<BTNodeBase> executeNodesLog = new List<BTNodeBase>();
 
+		/// <summary>
+		/// 尝试打断操作的Condition节点
+		/// </summary>
+		[HideInInspector]
+		public List<BTNodeCondition> tryInterruptNodes = new List<BTNodeCondition>();
+
 		public float LastTick { get; private set; }
 
 		private void Awake()
 		{
-			//Debug.Log("BehaviorTree Awake");
 			//找到当前树的根节点
 			rootNode = treeNodes.FindAll(node => node.GetType().IsSubclassOf(typeof(BTNodeControl)))
 								.Find(node => (node as BTNodeControl).isRootNode);
@@ -77,11 +82,12 @@ namespace RPGCore.BehaviorTree
 		/// </summary>
 		public void Tick()
 		{
+			EvaluateInterruptions();
+			//Debug.Log("执行栈长度：" + executeNodes.Count);
 			while (executeNodes.Count > 0)
 			{
 				//获取当前正在执行的节点
 				BTNodeBase currentNode = executeNodes[executeNodes.Count - 1];
-				//Debug.Log("正在执行的节点 ：" + currentNode.nodeName);
 				//执行并拿到运行结果
 				NodeResult nodeResult = currentNode.Execute();
 				//保存自己的运行结果
@@ -104,9 +110,11 @@ namespace RPGCore.BehaviorTree
 						//这个加入执行栈中的子节点就会作为下一次循环的执行节点
 						executeNodes.Add(nodeResult.targetNode);
 						executeNodesLog.Add(nodeResult.targetNode);
+						//尝试将当前节点加入打断列表中
+						TryInterrupt(nodeResult.targetNode);
 						//设置当前节点的优先级 根据执行的先后顺序来确定 优先级越高越先执行
 						nodeResult.targetNode.nodePriority = executeNodesLog.Count;
-						//Debug.Log(nodeResult.targetNode.nodeName + "加入了执行栈");
+						//Debug.Log(nodeResult.targetNode.nodeName + "加入了执行栈|" + nodeResult.targetNode.nodePriority);
 						//调用Enter方法
 						nodeResult.targetNode.Enter();
 						continue;
@@ -128,6 +136,68 @@ namespace RPGCore.BehaviorTree
 		}
 
 		/// <summary>
+		/// 判断并执行中断操作
+		/// </summary>
+		public void EvaluateInterruptions()
+		{
+			//Debug.Log("当前打断列表中有 " + tryInterruptNodes.Count + " 个节点");
+			if (tryInterruptNodes.Count == 0) return;
+			BTNodeCondition abortNode = null;
+			//遍历 越先遍历的节点优先级越高
+			for (int i = 0; i < tryInterruptNodes.Count; i++)
+			{
+				//找到要执行打断操作且优先级最高的节点
+				if (tryInterruptNodes[i].IsCanAbort())
+				{
+					abortNode = tryInterruptNodes[i];
+					break;
+				}
+			}
+			if (abortNode != null)
+			{
+				//Debug.Log("当前打断节点 : " + abortNode.nodeName);
+				//将执行栈恢复到当前节点执行的时候(包含当前节点)
+				executeNodes.Clear();
+				executeNodes.AddRange(abortNode.GetStoredTreeSnapshot());
+				for (int i = 0; i < executeNodes.Count; i++)
+				{
+					BTNodeBase node = executeNodes[i];
+					if (node.nodeState == Nodes.BTNodeState.Running)
+					{
+						node.OnBehaviourTreeAbort();
+					}
+					else if (node.nodeState == Nodes.BTNodeState.Succeed || node.nodeState == Nodes.BTNodeState.Failed)
+					{
+						//重新执行enter 因为我们并没有真正再次执行过这些节点
+						node.Enter();
+					}
+					//将所有节点之前的状态设置为running
+					node.nodeState = Nodes.BTNodeState.Running;
+				}
+				//同时也将Log栈恢复到当前节点执行的时候
+				int cIndex = executeNodesLog.Count - 1;
+				while (cIndex > 0)
+				{
+					BTNodeBase node = executeNodesLog[cIndex];
+					if (node == abortNode) break;
+					if (node.nodeState == Nodes.BTNodeState.Running)
+					{
+						//打断前还在执行的节点执行exit
+						node.Exit();
+					}
+					node.nodeState = Nodes.BTNodeState.Noone;
+					cIndex -= 1;
+				}
+				cIndex += 1;
+				if (cIndex < executeNodesLog.Count)
+				{
+					executeNodesLog.RemoveRange(cIndex, executeNodesLog.Count - cIndex);
+				}
+				abortNode.nodeState = Nodes.BTNodeState.Noone;
+			}
+		}
+
+		/// <summary>
 		/// 重置所有运行过的节点的状态
 		/// </summary>
 		public void ResetNodes()
@@ -145,6 +215,7 @@ namespace RPGCore.BehaviorTree
 			}
 			executeNodes.Clear();
 			executeNodesLog.Clear();
+			tryInterruptNodes.Clear();
 		}
 
 		/// <summary>
@@ -184,6 +255,22 @@ namespace RPGCore.BehaviorTree
 			}
 			//将当前执行栈中的节点全部copy给stack
 			executeNodes.CopyTo(stack);
+		}
+
+		/// <summary>
+		/// 尝试将当前节点加入打断列表中
+		/// </summary>
+		/// <param name="node"></param>
+		public void TryInterrupt(BTNodeBase node)
+		{
+			if (tryInterruptNodes.Contains(node as BTNodeCondition)) return;
+			if (node.nodeType == Nodes.BTNodeType.Condition)
+			{
+				if ((node as BTNodeCondition).abortType != Nodes.AbortType.Noone)
+				{
+					tryInterruptNodes.Add(node as BTNodeCondition);
+				}
+			}
 		}
 
 #if UNITY_EDITOR

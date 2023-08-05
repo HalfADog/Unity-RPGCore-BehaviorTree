@@ -16,6 +16,11 @@ namespace RPGCore
 		public Comparator comparator;
 		public RPGCore.BehaviorTree.Variable.FloatReference length = new BehaviorTree.Variable.FloatReference();
 
+		public override void Enter()
+		{
+			base.Enter();
+		}
+
 		public override bool Check()
 		{
 			float sqrMagnitude = (targetA.Value.position - targetB.Value.position).sqrMagnitude;

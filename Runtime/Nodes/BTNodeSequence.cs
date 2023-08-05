@@ -37,5 +37,10 @@ namespace RPGCore.BehaviorTree.Nodes
 			}
 			return NodeResult.success;
 		}
+
+		public override void OnBehaviourTreeAbort()
+		{
+			ResetCurrentChild();
+		}
 	}
 }
