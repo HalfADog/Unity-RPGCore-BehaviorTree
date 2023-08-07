@@ -155,7 +155,7 @@ namespace RPGCore.BehaviorTree
 			}
 			if (abortNode != null)
 			{
-				//Debug.Log("当前打断节点 : " + abortNode.nodeName);
+				Debug.Log("当前打断节点 : " + abortNode.nodeName);
 				//将执行栈恢复到当前节点执行的时候(包含当前节点)
 				executeNodes.Clear();
 				executeNodes.AddRange(abortNode.GetStoredTreeSnapshot());

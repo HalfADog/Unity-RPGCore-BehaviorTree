@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Assets/Scripts/BehaviorTree/Unity-RPGCore-BehaviorTree/Resources/BehaviorTreeNodeView.uss?fileID=7433441132597879392&amp;guid=9d0a630a6e9ca054eaef43c0c60cbe11&amp;type=3#BehaviorTreeNodeView" />
-    <ui:VisualElement name="node-state" picking-mode="Ignore" />
+    <ui:VisualElement name="node-state" picking-mode="Ignore" style="background-color: rgba(0, 0, 0, 0);" />
     <ui:VisualElement name="node-border">
         <ui:VisualElement name="contents">
             <ui:VisualElement name="top">

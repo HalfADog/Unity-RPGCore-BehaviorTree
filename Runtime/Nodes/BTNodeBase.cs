@@ -66,7 +66,7 @@ namespace RPGCore.BehaviorTree.Nodes
 		/// <summary>
 		/// 记录当前节点的状态
 		/// </summary>
-		[HideInInspector] public BTNodeState nodeState = BTNodeState.Noone;
+		public BTNodeState nodeState = BTNodeState.Noone;
 
 		/// <summary>
 		/// 节点运行中返回的状态

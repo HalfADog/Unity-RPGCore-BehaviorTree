@@ -132,5 +132,14 @@ namespace RPGCore.BehaviorTree.Editor
 				RemoveElement(node);
 			}
 		}
+
+		public void UpdateNodesStateView()
+		{
+			for (int i = 0; i < nodes.Count(); i++)
+			{
+				BTNodeGraph node = nodes.ToArray()[i] as BTNodeGraph;
+				node.UpdateNodeStateView();
+			}
+		}
 	}
 }

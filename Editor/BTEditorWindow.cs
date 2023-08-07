@@ -99,6 +99,7 @@ namespace RPGCore.BehaviorTree.Editor
 			saveButton.RegisterCallback<ClickEvent>(callback => { UpdateMonoNodes(); });
 			newButton.RegisterCallback<ClickEvent>(callback =>
 			{
+				if (Application.isPlaying) return;
 				//新行为树名称不为空 且不存在
 				if (newBtName.text != "" && treeExecutor.behaviorTrees.FindIndex(tree => tree.treeName == newBtName.text) == -1)
 				{
@@ -111,6 +112,7 @@ namespace RPGCore.BehaviorTree.Editor
 			});
 			deleteTreeButton.RegisterCallback<ClickEvent>(callback =>
 			{
+				if (Application.isPlaying) return;
 				nodeGraphView.currentSelectedNode = null;
 				DeleteCurrentEditorTree();
 			});
@@ -173,6 +175,11 @@ namespace RPGCore.BehaviorTree.Editor
 			}
 		}
 
+		private void OnInspectorUpdate()
+		{
+			nodeGraphView.UpdateNodesStateView();
+		}
+
 		/// <summary>
 		/// 创建一个mono节点
 		/// </summary>
@@ -232,6 +239,7 @@ namespace RPGCore.BehaviorTree.Editor
 		/// </summary>
 		public void UpdateMonoNodes()
 		{
+			if (Application.isPlaying) return;
 			if (targetGameObject != null && treeExecutor.currentEditorTree != null && nodeGraphView.nodes.Count() != 0)
 			{
 				//首先更新节点数量
@@ -442,6 +450,7 @@ namespace RPGCore.BehaviorTree.Editor
 		/// </summary>
 		private void AddVariable()
 		{
+			if (Application.isPlaying) return;
 			treeBlackboard.CreateVariable(addVariableName.text, variableTypes[addVariableTypes.index]);
 			variableList.Rebuild();
 		}
@@ -451,6 +460,7 @@ namespace RPGCore.BehaviorTree.Editor
 		/// </summary>
 		private void DeleteVariable()
 		{
+			if (Application.isPlaying) return;
 			if (variableList.selectedItem == null) return;
 			var variable = treeBlackboard.variables.Find(variable => variable.key == (variableList.selectedItem as Variable.BlackboardVariable).key);
 			if (variable != null)

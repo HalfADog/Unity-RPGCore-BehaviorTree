@@ -124,5 +124,27 @@ namespace RPGCore.BehaviorTree.Editor
 			base.OnUnselected();
 			descriptionContainer.style.display = DisplayStyle.None;
 		}
+
+		public void UpdateNodeStateView()
+		{
+			RemoveFromClassList("running");
+			RemoveFromClassList("success");
+			RemoveFromClassList("failure");
+			if (!Application.isPlaying) return;
+			switch (monoNode.nodeState)
+			{
+				case Nodes.BTNodeState.Succeed:
+					AddToClassList("success");
+					break;
+
+				case Nodes.BTNodeState.Failed:
+					AddToClassList("failure");
+					break;
+
+				case Nodes.BTNodeState.Running:
+					AddToClassList("running");
+					break;
+			}
+		}
 	}
 }
