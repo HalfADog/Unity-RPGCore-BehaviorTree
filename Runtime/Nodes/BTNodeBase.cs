@@ -66,7 +66,7 @@ namespace RPGCore.BehaviorTree.Nodes
 		/// <summary>
 		/// 记录当前节点的状态
 		/// </summary>
-		public BTNodeState nodeState = BTNodeState.Noone;
+		[HideInInspector] public BTNodeState nodeState = BTNodeState.Noone;
 
 		/// <summary>
 		/// 节点运行中返回的状态
@@ -163,6 +163,15 @@ namespace RPGCore.BehaviorTree.Nodes
 		/// </summary>
 		public virtual void OnBehaviourTreeAbort()
 		{
+		}
+
+		/// <summary>
+		/// 判断是否有共同父级
+		/// </summary>
+		/// <param name="other"></param>
+		public bool SameParent(BTNodeBase other)
+		{
+			return parentNode == other.parentNode;
 		}
 
 #if UNITY_EDITOR
