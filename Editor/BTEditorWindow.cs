@@ -1,7 +1,5 @@
 using RPGCore.BehaviorTree.Nodes;
-using RPGCore.BehaviorTree.Variable;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -71,7 +69,6 @@ namespace RPGCore.BehaviorTree.Editor
 			nodeGraphView = new BTNodeGraphView(this);
 			nodeGraphView.StretchToParentSize();
 			rootVisualElement.Q<VisualElement>("RightPane").Add(nodeGraphView);
-
 			//º”‘ÿblackboard ”Õº
 			blackboardView = rootVisualElement.Q<VisualElement>("Blackboard");
 			VisualTreeAsset blackboardViewTree = Resources.Load<VisualTreeAsset>("BlackboardEditorWindow");

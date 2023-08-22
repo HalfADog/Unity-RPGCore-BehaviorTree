@@ -64,8 +64,17 @@ namespace RPGCore.BehaviorTree.Nodes
 		///	是否能够执行打断操作
 		/// </summary>
 		/// <returns></returns>
-		public bool IsCanAbort()
+		public bool IsCanAbort(BTNodeBase runningNode)
 		{
+			bool isBortherNode = IsBrotherNode(runningNode);
+			//如果当前的AbortType为Self 需要当前Running的节点是兄弟节点
+			//如果当前的AbortType为LowPriority 需要当前Running的节点是非兄弟节点
+			//否则返回失败
+			if ((abortType == AbortType.Self && !isBortherNode) ||
+				(abortType == AbortType.LowPriority && isBortherNode))
+			{
+				return false;
+			}
 			//结果和上次不同才能执行打断操作
 			bool c = Check();
 			if (c != lastCheckResult)

@@ -147,7 +147,7 @@ namespace RPGCore.BehaviorTree
 			for (int i = 0; i < tryInterruptNodes.Count; i++)
 			{
 				//找到要执行打断操作且优先级最高的节点
-				if (tryInterruptNodes[i].IsCanAbort())
+				if (tryInterruptNodes[i].IsCanAbort(executeNodes[executeNodes.Count - 1]))
 				{
 					abortNode = tryInterruptNodes[i];
 					break;
