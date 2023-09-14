@@ -8,7 +8,7 @@ using Unity.VisualScripting;
 
 namespace RPGCore
 {
-	[BTNode("Example/CompareDistance", "比较距离")]
+	[BTNode("Condition/CompareDistance", "比较距离")]
 	public class CompareDistance : BTNodeCondition
 	{
 		public RPGCore.BehaviorTree.Variable.TransformReference targetA = new BehaviorTree.Variable.TransformReference();

@@ -6,7 +6,7 @@ using RPGCore.BehaviorTree.Nodes;
 using RPGCore.BehaviorTree;
 using RPGCore.BehaviorTree.Variable;
 
-[BTNode("Example/Wait", "等待指定时间")]
+[BTNode("Action/Wait", "等待指定时间")]
 public class Wait : BTNodeAction
 {
 	public RPGCore.BehaviorTree.Variable.FloatReference waitTime = new RPGCore.BehaviorTree.Variable.FloatReference();

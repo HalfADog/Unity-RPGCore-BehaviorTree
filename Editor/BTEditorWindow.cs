@@ -33,6 +33,7 @@ namespace RPGCore.BehaviorTree.Editor
 		private VisualTreeAsset variableViewTree;
 
 		private bool deleteTree = false;
+		private bool playModeChange = false;
 
 		/// <summary>
 		/// 当前选中的有btexecute的gameobject
@@ -174,7 +175,23 @@ namespace RPGCore.BehaviorTree.Editor
 
 		private void OnInspectorUpdate()
 		{
+			//Debug.Log(Selection.activeGameObject);
 			nodeGraphView.UpdateNodesStateView();
+			if (Application.isPlaying != playModeChange)
+			{
+				playModeChange = Application.isPlaying;
+				if (Application.isPlaying)
+				{
+					GameObject selected = Selection.activeGameObject;
+					if (selected != null && selected.GetComponent<BehaviorTreeExecutor>() != null)
+					{
+						targetGameObject = selected;
+					}
+					rootVisualElement.SetEnabled(targetGameObject != null);
+				}
+				treeExecutor = targetGameObject?.GetComponent<BehaviorTreeExecutor>();
+				RegenerateGraphNodesView();
+			}
 		}
 
 		/// <summary>
@@ -186,7 +203,7 @@ namespace RPGCore.BehaviorTree.Editor
 		{
 			BTNodeBase node = (BTNodeBase)targetGameObject.AddComponent(nodeType);
 			//将脚本在inspector中隐藏不显示
-			//node.hideFlags = HideFlags.HideInInspector;
+			node.hideFlags = HideFlags.HideInInspector;
 			node.targetTree = treeExecutor.currentEditorTree;
 			node.targetTree.treeNodes.Add(node);
 			return node;
@@ -255,7 +272,10 @@ namespace RPGCore.BehaviorTree.Editor
 				//再次更新节点视图的的节点位置信息到runtime节点
 				graphNodes.ForEach(gnode =>
 				{
-					((BTNodeGraph)gnode).monoNode.graphNodePosition = gnode.GetPosition().position;
+					if (gnode.GetPosition().position != Vector2.zero)
+					{
+						((BTNodeGraph)gnode).monoNode.graphNodePosition = gnode.GetPosition().position;
+					}
 				});
 				//之后再更新节点之间的连接关系 即Edges
 				monoNodes.ForEach(mnode => { mnode.childNodes?.Clear(); });//先清空 重新计算

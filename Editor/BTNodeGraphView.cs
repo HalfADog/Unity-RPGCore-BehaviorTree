@@ -25,8 +25,9 @@ namespace RPGCore.BehaviorTree.Editor
 				if (selectedNode != value)
 				{
 					selectedNode = value;
-					editorWindow.UpdateNodeInspectorView(selectedNode);
+					//Debug.Log(selectedNode.nodeName + " Selected!");
 				}
+				editorWindow.UpdateNodeInspectorView(selectedNode);
 			}
 		}
 

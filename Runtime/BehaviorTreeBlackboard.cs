@@ -77,6 +77,7 @@ namespace RPGCore.BehaviorTree.Blackboard
 				}
 			}
 			Variable.BlackboardVariable var = gameObject.AddComponent(variableType) as Variable.BlackboardVariable;
+			var.hideFlags = HideFlags.HideInInspector;
 			var.key = k;
 			variables.Add(var);
 		}

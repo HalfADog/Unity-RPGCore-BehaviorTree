@@ -58,7 +58,6 @@ namespace RPGCore.BehaviorTree.Editor
 					break;
 
 				case Nodes.BTNodeType.Decorator:
-					multiConnection = false;
 					outputPort = true;
 					AddToClassList("decorator");
 					break;

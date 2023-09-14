@@ -72,8 +72,8 @@ namespace RPGCore.BehaviorTree.Editor
 			selectTreeIndex = EditorGUILayout.Popup("Execute Tree", selectTreeIndex, options.ToArray(), GUILayout.ExpandWidth(true));
 			treeExecutor.currentExecuteTree = treeExecutor.behaviorTrees.Find(tree => tree.treeName == options[selectTreeIndex]);
 
-			GUILayout.Space(16);
-			DrawDefaultInspector();
+			//GUILayout.Space(16);
+			//DrawDefaultInspector();
 		}
 	}
 }

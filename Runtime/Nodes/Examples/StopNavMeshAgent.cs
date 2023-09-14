@@ -6,7 +6,7 @@ using RPGCore.BehaviorTree.Nodes;
 using RPGCore.BehaviorTree;
 using UnityEngine.AI;
 
-[BTNode("Example/Stop NavMeshAgent", "Í£Ö¹ÒÆ¶¯")]
+[BTNode("Action/Stop NavMeshAgent", "Í£Ö¹ÒÆ¶¯")]
 public class StopNavMeshAgent : BTNodeAction
 {
 	private NavMeshAgent agent;

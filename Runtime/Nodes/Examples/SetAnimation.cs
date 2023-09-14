@@ -5,7 +5,7 @@ using RPGCore;
 using RPGCore.BehaviorTree.Nodes;
 using RPGCore.BehaviorTree;
 
-[BTNode("Example/Set Animation", "设置动画")]
+[BTNode("Action/Set Animation", "设置动画")]
 public class SetAnimation : BTNodeAction
 {
 	public string animationName;

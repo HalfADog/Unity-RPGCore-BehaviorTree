@@ -5,7 +5,7 @@ using RPGCore;
 using RPGCore.BehaviorTree.Nodes;
 using RPGCore.BehaviorTree;
 
-[BTNode("Example/Fixed Return Value", "返回一个固定的值")]
+[BTNode("Decorator/Fixed Return Value", "返回一个固定的值")]
 public class FixedReturnValue : BTNodeDecorator
 {
 	public ReturnValue fixedValue;
